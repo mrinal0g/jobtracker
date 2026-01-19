@@ -11,6 +11,12 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+}
+body {
+  margin: 0;
+  padding: 0;
 }
 
 a {
@@ -55,6 +61,12 @@ button:focus-visible {
 }
 
 .job-div {
+  width: 30%;
+  min-width: 300px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   margin: 1rem;
   border: 1px solid #242424;
 }
@@ -63,6 +75,29 @@ button:focus-visible {
   justify-content: center;
   flex-direction: column;
   align-items: center;
+}
+
+.update-modal-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.836);
+}
+
+#modal-box {
+  background-color: rgb(255, 255, 255);
+  padding: 7.5%;
+}
+#jobs-container {
+  width: 100vw;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 @media (prefers-color-scheme: light) {

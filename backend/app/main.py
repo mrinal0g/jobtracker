@@ -4,6 +4,8 @@ from contextlib import asynccontextmanager
 from app.db import connect_to_mongo, close_mongo_connection
 from app.schemas import JobCreate
 from app.db import get_collection
+from bson import ObjectId
+from fastapi import HTTPException
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -43,10 +45,30 @@ async def get_jobs():
 async def delete_job(job_id: str):
     print(f"Deleting job with id: {job_id}")
     collection = get_collection()
-    result = await collection.delete_one({"_id": job_id})
+    result = await collection.delete_one({"_id": ObjectId(job_id)})
     if result.deleted_count == 1:
         return {"status": "deleted"}
     return {"status": "not found"}
+
+@app.patch("/update-job/{job_id}")
+async def update_job(job_id: str,updates:dict):
+    print(f"Updating job with id: {job_id}")
+    collection = get_collection()
+    try:
+       oid = ObjectId(job_id)
+    except:
+      raise HTTPException(status_code=400, detail="Invalid job ID format")
+    if "_id" in updates:
+        updates.pop("_id")  # Prevent changing the _id field
+    result = await collection.update_one(
+        {"_id": oid},
+        {"$set": updates}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Job not found")
+    updated = await collection.find_one({"_id": oid})
+    updated["_id"] = str(updated["_id"])
+    return updated
 
 @app.get("/health")
 async def health():
